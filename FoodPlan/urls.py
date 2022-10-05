@@ -17,7 +17,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
-from planes.views import authorization, index, order, personal_account, registration
+from planes.views import index, order, personal_account, registration
 from django.contrib.auth.views import LoginView, LogoutView
 
 
@@ -29,6 +29,11 @@ urlpatterns = [
         'login/',
         LoginView.as_view(template_name='auth.html'),
         name='login'
+    ),
+    path(
+        'logout/',
+        LogoutView.as_view(template_name='lk.html'),
+        name='logout'
     ),
     path('order/', order, name='order'),
     path('registration/', registration, name='registration'),
