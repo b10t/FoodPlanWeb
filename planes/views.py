@@ -13,3 +13,10 @@ def personal_account(request):
     }
 
     return render(request, 'lk.html', context)
+
+
+def authorization(request):
+    context = {
+    }
+
+    return render(request, 'auth.html', context)
