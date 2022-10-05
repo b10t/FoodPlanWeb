@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 import os
 from pathlib import Path
 
+import dj_database_url
 from environs import Env
 
 env = Env()
@@ -30,7 +31,7 @@ SECRET_KEY = env.str('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DEBUG', False)
 
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', [])
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', '0.0.0.0:8000')
 
 STRIPE_API_KEY = env.str('STRIPE_API_KEY')
 
@@ -82,10 +83,10 @@ WSGI_APPLICATION = 'FoodPlan.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+        "default": env.dj_db_url(
+            "DATABASE_URL",
+            'sqlite:////{0}'.format(os.path.join(BASE_DIR, 'db.sqlite3'))
+        ),
 }
 
 
