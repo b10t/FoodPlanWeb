@@ -17,12 +17,14 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
-from planes.views import authorization, index, personal_account
+from planes.views import authorization, index, order, personal_account, registration
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('lk/', personal_account, name='personal_account'),
     path('auth/', authorization, name='authorization'),
+    path('order/', order, name='order'),
+    path('registration/', registration, name='registration'),
     path('', index, name='index'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

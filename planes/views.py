@@ -20,3 +20,17 @@ def authorization(request):
     }
 
     return render(request, 'auth.html', context)
+
+
+def order(request):
+    context = {
+    }
+
+    return render(request, 'order.html', context)
+
+
+def registration(request):
+    context = {
+    }
+
+    return render(request, 'registration.html', context)
