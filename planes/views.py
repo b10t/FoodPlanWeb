@@ -6,3 +6,10 @@ def index(request):
     }
 
     return render(request, 'index.html', context)
+
+
+def personal_account(request):
+    context = {
+    }
+
+    return render(request, 'lk.html', context)
