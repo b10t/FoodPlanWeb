@@ -140,3 +140,5 @@ MEDIA_URL = '/media/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'planes.User'
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'personal_account'

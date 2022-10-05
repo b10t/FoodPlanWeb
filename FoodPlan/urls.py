@@ -18,11 +18,18 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
 from planes.views import authorization, index, order, personal_account, registration
+from django.contrib.auth.views import LoginView, LogoutView
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('lk/', personal_account, name='personal_account'),
-    path('auth/', authorization, name='authorization'),
+    # path('auth/', authorization, name='authorization'),
+    path(
+        'login/',
+        LoginView.as_view(template_name='auth.html'),
+        name='login'
+    ),
     path('order/', order, name='order'),
     path('registration/', registration, name='registration'),
     path('', index, name='index'),
