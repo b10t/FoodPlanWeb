@@ -37,8 +37,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = CustomManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', ]
-
+    REQUIRED_FIELDS = ['username',]
     def __str__(self):
         return f'{self.username}, {self.email if self.email else "no email"}'
 
