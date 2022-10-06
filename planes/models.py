@@ -1,4 +1,6 @@
+from email.policy import default
 import random
+import uuid
 
 from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager,
                                         PermissionsMixin)
@@ -200,6 +202,24 @@ class Subscribe(models.Model):
     duration = models.IntegerField(
         default=1,
         verbose_name='Длительность подписки, мес.',
+    )
+    payment_id = models.UUIDField(
+        default=uuid.uuid4,
+        editable=False,
+        unique=True,
+        db_index=True,
+        verbose_name='Идентификатор платежа'
+    )
+    stripe_payment_id = models.CharField(
+        max_length=100,
+        blank=True,
+        default='',
+        editable=False,
+        verbose_name='Ид. платежа stripe'
+    )
+    cost = models.IntegerField(
+        'стоимость месяца подписки в рублях',
+        default=100
     )
     subscription_paid = models.BooleanField(
         blank=False,
