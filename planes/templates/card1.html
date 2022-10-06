@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}План питания на неделю, меню, рецепты, список покупок. Классическое меню, безуглеводное меню{% endblock %}
+
+{% block header %}
+  <header>
+      <nav class="navbar navbar-expand-md navbar-light fixed-top navbar__opacity">
+          <div class="container">
+              <a class="navbar-brand" href="#">
+                  <img src="{% static '/img/logo.8d8f24edbb5f.svg' %}" height="55" width="189" alt="">
+              </a>
+              <button class="btn btn-outline-success me-2 shadow-none foodplan_green foodplan__border_green">Назад</button>
+          </div>
+      </nav>
+  </header>
+{% endblock %}
+
+{% block content %}
+  <main style="margin-top: calc(2rem + 75px);">
+      <section>
+          <div class="container">
+              <div class="row">
+                  <div class="col-12 col-md-4 d-flex justify-content-center">
+                      <div class="card foodplan__card_borderless">
+                          <img src="{% static '/img/circle1.png' %}" alt="">
+                      </div>
+                  </div>
+                  <div class="col-12 col-md-6 d-flex flex-column justify-content-between">
+                      <h2>Название рецепта</h2>
+                      <ul class="list-group list-group-flush">
+                          <li class="list-group-item">ингредиент (500г.)</li>
+                          <li class="list-group-item">ингредиент (500г.)</li>
+                          <li class="list-group-item">ингредиент (500г.)</li>
+                          <li class="list-group-item">ингредиент (500г.)</li>
+                          <li class="list-group-item">ингредиент (500г.)</li>
+                      </ul>
+                      <h6>Общая калорийность: 1000 ккал</h6>
+                  </div>
+              </div>
+          </div>
+      </section>
+  </main>
+{% endblock %}
+
+{% block footer %}
+  <footer>
+      <nav class="navbar navbar-expand-md navbar-light mt-5">
+          <div class="container p-2">
+              <a class="navbar-brand" href="#">
+                  <img src="{% static '/img/logo.8d8f24edbb5f.svg' %}" height="55" width="189" alt="">
+              </a>
+              <div class="footer__sideBtns d-flex">
+                  <a href="#">
+                      <img src="{% static '/img/vk.png' %}" height="38" width="auto" alt="">
+                  </a>
+              </div>
+          </div>
+      </nav>
+  </footer>
+  <footer class="footer pt-2" style="border-top: 1px solid lightgray;">
+      <div class="container d-flex flex-row justify-content-center mb-2">
+          <small class="text-center">
+              <h6>© Девман2022. Все права защищены. © Devman2022. All right reserved.</h6>
+              <a href="#" class="link-secondary">Политика конфиденциальности</a>
+          </small>
+      </div>
+  </footer>
+{% endblock %}
