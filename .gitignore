@@ -160,8 +160,3 @@ cython_debug/
 #.idea/
 
 .vscode/
-json/classic_dishes.json
-json/dish.json
-json/keto_dish.json
-json/low_card_dishes.json
-json/vegan_dishes.json
