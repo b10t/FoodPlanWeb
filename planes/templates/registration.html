@@ -16,21 +16,10 @@
               </button>
               <div class="collapse navbar-collapse" id="navbarCollapse1">
                   <ul class="navbar-nav w-100">
-                      <li class="nav-item nav-item__border">
-                          <a class="nav-link active" aria-current="page" href="#">Виды меню</a>
-                      </li>
-                      <li class="nav-item nav-item__border">
-                          <a class="nav-link active" aria-current="page" href="#">Отзывы</a>
-                      </li>
-                      <li class="nav-item nav-item__border">
-                          <a class="nav-link active" aria-current="page" href="#">FAQ</a>
-                      </li>
-                      <li class="nav-item nav-item__border">
-                          <a class="nav-link active" aria-current="page" href="#">Контакты</a>
-                      </li>
+
                       <li class="nav-item align-items-center d-md-flex flex-grow-1 justify-content-end">
-                          <button class="btn btn-outline-success me-2 foodplan_green foodplan__border_green">Подписка</button>
-                          <button class="btn btn-outline-success foodplan_green foodplan__border_green" onclick="location.href='{% url 'login' %}'">Войти</button>
+                          <button class="btn shadow-none btn-outline-success me-2 foodplan_green foodplan__border_green">Подписка</button>
+                          <button class="btn shadow-none btn-outline-success foodplan_green foodplan__border_green">Войти</button>
                       </li>
                   </ul>
               </div>
@@ -74,10 +63,10 @@
                       </div>
                       <div class="row mb-3">
                           <div class="col-12 col-sm-6 mt-3">
-                              <button type="submit" class="btn w-100 btn-outline-success foodplan_green foodplan__border_green">Зарегистрироваться</button>
+                              <button type="submit" class="btn shadow-none w-100 btn-outline-success foodplan_green foodplan__border_green">Регистрация</button>
                           </div>
                           <div class="col-12 col-sm-6 mt-3 d-flex justify-content-center align-items-center">
-                              <h6>Уже есть аккаунт? <a href="{% url 'login' %}" class="link-dark foodplan_green">Войти</a></h6>
+                              <small>Уже есть аккаунт? <a href="{% url 'login' %}" class="link-dark foodplan_green">Войти</a></small>
                           </div>
                       </div>
                   </form>
