@@ -64,7 +64,7 @@
                       <tr>
                           <th scope="row" class="text-start">Срок</th>
                           <td>
-                            <select class="form-select">
+                            <select name="duration" class="form-select">
                                 <option value="0" selected>1 мес.</option>
                                 <option value="1">3 мес.</option>
                                 <option value="2">6 мес.</option>
@@ -111,7 +111,7 @@
                       <tr>
                           <th scope="row" class="text-start">Кол-во персон</th>
                           <td>
-                              <select name="select5" class="form-select">
+                              <select name="persons_number" class="form-select">
                                   <option value="0" selected>1</option>
                                   <option value="1">2</option>
                                   <option value="2">3</option>
@@ -124,42 +124,14 @@
                       <tr>
                           <th scope="row" class="text-start">Аллергии</th>
                           <td>
-                              <div class="form-check d-flex justify-content-start">
-                                  <input class="form-check-input me-1 foodplan_checked-green" type="checkbox" value="" name="allergy1">
-                                  <label class="form-check-label" for="allergy1">
-                                      Рыба и морепродукты
-                                  </label>
-                              </div>
-                              <div class="form-check d-flex justify-content-start">
-                                  <input class="form-check-input me-1 foodplan_checked-green" type="checkbox" value="" name="allergy2">
-                                  <label class="form-check-label" for="allergy2">
-                                      Мясо
-                                  </label>
-                              </div>
-                              <div class="form-check d-flex justify-content-start">
-                                  <input class="form-check-input me-1 foodplan_checked-green" type="checkbox" value="" name="allergy3">
-                                  <label class="form-check-label" for="allergy3">
-                                      Зерновые
-                                  </label>
-                              </div>
-                              <div class="form-check d-flex justify-content-start">
-                                  <input class="form-check-input me-1 foodplan_checked-green" type="checkbox" value="" name="allergy3">
-                                  <label class="form-check-label" for="allergy3">
-                                      Продукты пчеловодства
-                                  </label>
-                              </div>
-                              <div class="form-check d-flex justify-content-start">
-                                  <input class="form-check-input me-1 foodplan_checked-green" type="checkbox" value="" name="allergy3">
-                                  <label class="form-check-label" for="allergy3">
-                                      Орехи и бобовые
-                                  </label>
-                              </div>
-                              <div class="form-check d-flex justify-content-start">
-                                  <input class="form-check-input me-1 foodplan_checked-green" type="checkbox" value="" name="allergy3">
-                                  <label class="form-check-label" for="allergy3">
-                                      Молочные продукты
-                                  </label>
-                              </div>
+                            {% for allergy in allergies %}
+                                <div class="form-check d-flex justify-content-start">
+                                    <input class="form-check-input me-1 foodplan_checked-green" type="checkbox" value="{{ allergy.id }}" name="allergy{{ allergy.id }}">
+                                    <label class="form-check-label" for="allergy{{ allergy.id }}">
+                                        {{ allergy.name }}
+                                    </label>
+                                </div>
+                            {% endfor %}
                           </td>
                       </tr>
                   </tbody>
