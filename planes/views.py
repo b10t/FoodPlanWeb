@@ -1,5 +1,15 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse_lazy
+from django.views.generic.edit import CreateView
+
+from .forms import CustomUserCreationForm
+
+
+class SignUpView(CreateView):
+    form_class = CustomUserCreationForm
+    success_url = reverse_lazy('login')
+    template_name = 'registration.html'
 
 
 def index(request):
@@ -23,10 +33,3 @@ def order(request):
     }
 
     return render(request, 'order.html', context)
-
-
-def registration(request):
-    context = {
-    }
-
-    return render(request, 'registration.html', context)
