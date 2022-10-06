@@ -34,9 +34,6 @@ def personal_account(request):
 
 @login_required
 def order(request):
-    print(f'request: {request}')
-    print(f'GET: {request.GET}')
-    print(f'POST: {request.POST}')
     context = {'allergies': Allergy.objects.all()}
     if 'foodtype' in request.GET:
         meals_number = 4 - int(request.GET.get('select1')) \
