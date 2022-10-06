@@ -1,1 +1,1 @@
-from FoodPlan.settings import *
+from FoodPlan.settings.default_settings import *
