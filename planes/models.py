@@ -184,7 +184,7 @@ class Subscribe(models.Model):
         User,
         on_delete=models.CASCADE,
         verbose_name='Пользователь',
-        related_name='subscribe_user'
+        related_name='subscribes'
     )
     number_of_meals = models.IntegerField(
         blank=False, default=1,
