@@ -38,7 +38,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = CustomManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username',]
+    REQUIRED_FIELDS = ['username', ]
+
     def __str__(self):
         return f'{self.username}, {self.email if self.email else "no email"}'
 
@@ -208,6 +209,11 @@ class Subscribe(models.Model):
     duration = models.IntegerField(
         default=1,
         verbose_name='Длительность подписки, мес.',
+    )
+    calories = models.PositiveIntegerField(
+        default=0,
+        blank=False,
+        verbose_name='Калории',
     )
     payment_id = models.UUIDField(
         default=uuid.uuid4,
