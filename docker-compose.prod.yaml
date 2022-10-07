@@ -3,58 +3,26 @@ version: '3.7'
 services:
   web:
     build: .
-    command: sh -c "python manage.py collectstatic --noinput --clear                     &&
-                    python manage.py migrate --noinput                                   &&
+    command: sh -c "python manage.py collectstatic --noinput                             &&
+                    python manage.py migrate                                             &&
                     gunicorn FoodPlan.wsgi:application --bind 0.0.0.0:8000"
     volumes:
-      - web-root:/usr/src/app/
+      - ./:/usr/src/app/
       - static_volume:/usr/src/app/FoodPlan/staticfiles
       - media_volume:/usr/src/app/media
     expose:
       - 8000
     env_file:
       - ./.env
-    networks:
-      - app-network
-    restart: always
   nginx:
-    container_name: nginx
     build: ./nginx
     volumes:
       - static_volume:/usr/src/app/FoodPlan/staticfiles
       - media_volume:/usr/src/app/media
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - certs:/etc/nginx/certs
-      - vhost.d:/etc/nginx/vhost.d
-      - html:/usr/share/nginx/html
     ports:
       - 80:80
-      - 443:443
     depends_on:
       - web
-    restart: always
-  nginx-proxy-letsencrypt:
-    image: jrcs/letsencrypt-nginx-proxy-companion
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - certs:/etc/nginx/certs:rw
-      - vhost.d:/etc/nginx/vhost.d:rw
-      - html:/usr/share/nginx/html:rw
-    depends_on:
-      - nginx
-    restart: always
-    environment:
-      - NGINX_PROXY_CONTAINER=nginx
-      - VIRTUAL_HOST=foodplandvm.tk
-      - LETSENCRYPT_HOST=foodplandvm.tk
-      - LETSENCRYPT_EMAIL=nikolay.v.byankin@gmail.com
 volumes:
   static_volume:
   media_volume:
-  web-root:
-  certs:
-  html:
-  vhost:
-networks:
-  app-network:
-    driver: bridge
