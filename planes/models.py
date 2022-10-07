@@ -1,4 +1,5 @@
 import random
+from tabnanny import verbose
 import uuid
 
 from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager,
@@ -61,6 +62,10 @@ class MenuType(models.Model):
     description = models.TextField(
         blank=True,
         verbose_name='Описание'
+    )
+    image = models.ImageField(
+        blank=True,
+        verbose_name='Картинка'
     )
 
     class Meta:
