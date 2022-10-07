@@ -107,16 +107,16 @@ class Dish(models.Model):
         max_length=255, blank=False, default='',
         verbose_name='Наименование',
     )
-    description = models.CharField(
-        max_length=2048, blank=True,
+    description = models.TextField(
+        blank=True,
         verbose_name='Описание',
     )
-    recipe = models.CharField(
-        max_length=2048, blank=True,
+    recipe = models.TextField(
+        blank=True,
         verbose_name='Рецепт приготовления',
     )
-    calories = models.CharField(
-        max_length=20, blank=False,
+    calories = models.IntegerField(
+        blank=False,
         default='',
         verbose_name='Калорийность',
     )
