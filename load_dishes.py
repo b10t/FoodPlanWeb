@@ -44,10 +44,10 @@ def load_menu_dishes(dishes_json, menu_type):
 
 
 def load_all_dishes():
-    load_menu_dishes('tools/classic_dishes.json', 'Классическое')
-    load_menu_dishes('tools/low_card_dishes.json', 'Низкоуглеводное')
-    load_menu_dishes('tools/keto_dish.json', 'Кето')
-    load_menu_dishes('tools/vegan_dishes.json', 'Вегетарианское')
+    load_menu_dishes('json/classic_dishes.json', 'Классическое')
+    load_menu_dishes('json/low_card_dishes.json', 'Низкоуглеводное')
+    load_menu_dishes('json/keto_dish.json', 'Кето')
+    load_menu_dishes('json/vegan_dishes.json', 'Вегетарианское')
 
 
 if __name__ == '__main__':
