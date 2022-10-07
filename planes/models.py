@@ -1,4 +1,6 @@
 import random
+from tabnanny import verbose
+import uuid
 
 from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager,
                                         PermissionsMixin)
@@ -37,7 +39,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = CustomManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username',]
+    REQUIRED_FIELDS = ['username', ]
+
     def __str__(self):
         return f'{self.username}, {self.email if self.email else "no email"}'
 
@@ -50,8 +53,19 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 class MenuType(models.Model):
     name = models.CharField(
-        max_length=255, unique=True, blank=False, default='',
+        unique=True,
+        max_length=255,
+        blank=False,
+        default='',
         verbose_name='Наименование меню',
+    )
+    description = models.TextField(
+        blank=True,
+        verbose_name='Описание'
+    )
+    image = models.ImageField(
+        blank=True,
+        verbose_name='Картинка'
     )
 
     class Meta:
@@ -176,7 +190,7 @@ class Subscribe(models.Model):
         User,
         on_delete=models.CASCADE,
         verbose_name='Пользователь',
-        related_name='subscribe_user'
+        related_name='subscribes'
     )
     number_of_meals = models.IntegerField(
         blank=False, default=1,
@@ -200,6 +214,29 @@ class Subscribe(models.Model):
     duration = models.IntegerField(
         default=1,
         verbose_name='Длительность подписки, мес.',
+    )
+    calories = models.PositiveIntegerField(
+        default=0,
+        blank=False,
+        verbose_name='Калории',
+    )
+    payment_id = models.UUIDField(
+        default=uuid.uuid4,
+        editable=False,
+        unique=True,
+        db_index=True,
+        verbose_name='Идентификатор платежа'
+    )
+    stripe_payment_id = models.CharField(
+        max_length=100,
+        blank=True,
+        default='',
+        editable=False,
+        verbose_name='Ид. платежа stripe'
+    )
+    cost = models.IntegerField(
+        'стоимость месяца подписки в рублях',
+        default=100
     )
     subscription_paid = models.BooleanField(
         blank=False,

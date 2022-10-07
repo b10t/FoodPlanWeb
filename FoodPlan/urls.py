@@ -17,7 +17,14 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
-from planes.views import index, order, personal_account, SignUpView
+from planes.views import (
+    index,
+    order,
+    personal_account,
+    SignUpView,
+    make_payment,
+    successful_payment
+)
 from django.contrib.auth.views import LoginView, LogoutView
 
 
@@ -37,6 +44,12 @@ urlpatterns = [
     path('order/', order, name='order'),
     path('registration/', SignUpView.as_view(), name='registration'),
     path('', index, name='index'),
+    path('make_payment/<str:payment_id>/', make_payment, name='make_payment'),
+    path(
+        'successful_payment/<str:payment_id>/',
+        successful_payment,
+        name='successful_payment'
+    ),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
