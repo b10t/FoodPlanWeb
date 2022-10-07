@@ -102,9 +102,9 @@ def order(request):
             )
         if menu_type == 'keto':
             subscription.menu_type = MenuType.objects.get(name='Кето')
-        calories = int(request.GET.get('calories'))
+        calories = request.GET.get('calories')
         if calories:
-            subscription.calories = calories
+            subscription.calories = int(calories)
         subscription.save()
         allergy_ids = list()
         for key, value in request.GET.items():
