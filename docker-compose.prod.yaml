@@ -18,6 +18,7 @@ services:
       - app-network
     restart: always
   nginx:
+    container_name: nginx
     build: ./nginx
     volumes:
       - static_volume:/usr/src/app/FoodPlan/staticfiles
