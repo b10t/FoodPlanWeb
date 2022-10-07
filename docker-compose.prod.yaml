@@ -16,33 +16,43 @@ services:
       - ./.env
     networks:
       - app-network
+    restart: always
   nginx:
     build: ./nginx
     volumes:
       - static_volume:/usr/src/app/FoodPlan/staticfiles
       - media_volume:/usr/src/app/media
-      - certbot-etc:/etc/letsencrypt
-      - certbot-var:/var/lib/letsencrypt
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - certs:/etc/nginx/certs
+      - vhost.d:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
     ports:
       - 80:80
+      - 443:443
     depends_on:
       - web
-  certbot:
-    image: certbot/certbot
-    container_name: certbot
+    restart: always
+  nginx-proxy-letsencrypt:
+    image: jrcs/letsencrypt-nginx-proxy-companion
     volumes:
-      - certbot-etc:/etc/letsencrypt
-      - certbot-var:/var/lib/letsencrypt
-      - web-root:/usr/src/app
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - certs:/etc/nginx/certs
+      - vhost.d:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
     depends_on:
-      - web
-    command: certonly --webroot --webroot-path=/usr/src/app --email nikolay.v.byankin@gmail.com --agree-tos --no-eff-email --staging -d foodplandvm.tk  -d www.foodplandvm.tk
+      - nginx
+    restart: always
+    environment:
+      - VIRTUAL_HOST=foodplandvm.tk
+      - LETSENCRYPT_HOST=foodplandvm.tk
+      - LETSENCRYPT_EMAIL=nikolay.v.byankin@gmail.com
 volumes:
   static_volume:
   media_volume:
   web-root:
-  certbot-var:
-  certbot-etc:
+  certs:
+  html:
+  vhost:
 networks:
   app-network:
     driver: bridge
