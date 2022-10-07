@@ -60,6 +60,7 @@ def personal_account(request):
     context = {
         'form': form,
         'message': message,
+        'subscribes': user.subscribes.all()
     }
 
     return render(request, 'lk.html', context)

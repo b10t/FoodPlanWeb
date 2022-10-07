@@ -117,39 +117,50 @@
                         </div>
                         <div class="tab-pane fade" id="menu">
                             <div class="row">
-                                <div class="col-2">
-                                    <img src="{% static '/img/circle1.png' %}" alt="" class="w-100">
-                                </div>
-                                <div class="col-10 col-md-10">
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <h2>Название подписки</h2>
-                                        </div>
-                                        <div class="col-md-12 col-lg-9">
-                                            <h6>Описание подписки Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eius saepe ea nobis necessitatibus
-                                                consectetur rem! Eligendi assumenda facere sint quibusdam dolorem quasi doloribus nemo, temporibus molestiae
-                                                distinctio cum laboriosam sed. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eius saepe ea nobis
-                                                necessitatibus consectetur rem! Eligendi
-                                                assumenda facere sint quibusdam dolorem quasi doloribus nemo, temporibus molestiae distinctio cum laboriosam
-                                                sed.</h6>
-                                        </div>
-                                        <div class="col-md-12 col-lg-3 text-muted d-flex flex-column justify-content-between">
-                                            <div class="d-flex flex-row justify-content-between">
-                                                <small>Персоны: </small><small>3</small>
-                                            </div>
-                                            <div class="d-flex flex-row justify-content-between">
-                                                <small>Аллергии: </small><small>нет</small>
-                                            </div>
-                                            <div class="d-flex flex-row justify-content-between">
-                                                <small>Калории: </small><small>1400</small>
-                                            </div>
-                                            <div class="d-flex flex-row justify-content-between">
-                                                <small>Кол-во приёмов пищи: </small><small>4</small>
-                                            </div>
+                              {% if subscribes %}
+                                {% for subscribe in subscribes %}
+                                  <div class="col-2">
 
-                                        </div>
-                                    </div>
-                                </div>
+                                    {% if subscribe.menu_type.image %}
+                                      <img src="{{ subscribe.menu_type.image.url }}" alt="" class="w-100">
+                                    {% else %}
+                                      <img src="{% static '/img/circle1.png' %}" alt="" class="w-100">
+                                    {% endif %}
+
+                                  </div>
+                                  <div class="col-10 col-md-10">
+                                      <div class="row">
+                                          <div class="col-12">
+                                              <h2>{{ subscribe.menu_type }}</h2>
+                                          </div>
+                                          <div class="col-md-12 col-lg-9">
+                                              <h6>{{ subscribe.menu_type.description }}</h6>
+                                          </div>
+                                          <div class="col-md-12 col-lg-3 text-muted d-flex flex-column justify-content-between">
+                                              <div class="d-flex flex-row justify-content-between">
+                                                  <small>Персоны: </small><small>{{ subscribe.number_of_person }}</var></small>
+                                              </div>
+                                              <div class="d-flex flex-row justify-content-between">
+                                                  <small>Аллергии: </small>
+                                                    <small>
+                                                      {% for allergy in subscribe.allergy.all %}
+                                                        {{ allergy }}
+                                                         <br>
+                                                      {% endfor %}
+                                                    </small>
+                                              </div>
+                                              <div class="d-flex flex-row justify-content-between">
+                                                  <small>Калории: </small><small>{{ subscribe.calories }}</small>
+                                              </div>
+                                              <div class="d-flex flex-row justify-content-between">
+                                                  <small>Кол-во приёмов пищи: </small><small>{{ subscribe.number_of_meals }}</small>
+                                              </div>
+
+                                          </div>
+                                      </div>
+                                  </div>
+                                {% endfor %}
+                              {% endif %}
                             </div>
                         </div>
                     </div>
