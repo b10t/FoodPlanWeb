@@ -102,6 +102,9 @@ def order(request):
             )
         if menu_type == 'keto':
             subscription.menu_type = MenuType.objects.get(name='Кето')
+        calories = int(request.GET.get('calories'))
+        if calories:
+            subscription.calories = calories
         subscription.save()
         allergy_ids = list()
         for key, value in request.GET.items():
@@ -173,4 +176,4 @@ def successful_payment(request, payment_id):
     subscription.subscription_paid = True
     subscription.save()
 
-    return render(request, 'lk.html', context)
+    return redirect('personal_account')
