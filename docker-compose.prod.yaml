@@ -1,0 +1,28 @@
+version: '3.7'
+
+services:
+  web:
+    build: .
+    command: sh -c "python manage.py collectstatic --noinput                             &&
+                    python manage.py migrate                                             &&
+                    gunicorn FoodPlan.wsgi:application --bind 0.0.0.0:8000"
+    volumes:
+      - ./:/usr/src/app/
+      - static_volume:/usr/src/app/FoodPlan/staticfiles
+      - media_volume:/usr/src/app/media
+    expose:
+      - 8000
+    env_file:
+      - ./.env
+  nginx:
+    build: ./nginx
+    volumes:
+      - static_volume:/usr/src/app/FoodPlan/staticfiles
+      - media_volume:/usr/src/app/media
+    ports:
+      - 80:80
+    depends_on:
+      - web
+volumes:
+  static_volume:
+  media_volume:
