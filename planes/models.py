@@ -51,8 +51,15 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 class MenuType(models.Model):
     name = models.CharField(
-        max_length=255, unique=True, blank=False, default='',
+        unique=True,
+        max_length=255,
+        blank=False,
+        default='',
         verbose_name='Наименование меню',
+    )
+    description = models.TextField(
+        blank=True,
+        verbose_name='Описание'
     )
 
     class Meta:
