@@ -3,26 +3,46 @@ version: '3.7'
 services:
   web:
     build: .
-    command: sh -c "python manage.py collectstatic --noinput                             &&
-                    python manage.py migrate                                             &&
+    command: sh -c "python manage.py collectstatic --noinput --clear                     &&
+                    python manage.py migrate --noinput                                   &&
                     gunicorn FoodPlan.wsgi:application --bind 0.0.0.0:8000"
     volumes:
-      - ./:/usr/src/app/
+      - web-root:/usr/src/app/
       - static_volume:/usr/src/app/FoodPlan/staticfiles
       - media_volume:/usr/src/app/media
     expose:
       - 8000
     env_file:
       - ./.env
+    networks:
+      - app-network
   nginx:
     build: ./nginx
     volumes:
       - static_volume:/usr/src/app/FoodPlan/staticfiles
       - media_volume:/usr/src/app/media
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/lib/letsencrypt
     ports:
       - 80:80
     depends_on:
       - web
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/lib/letsencrypt
+      - web-root:/usr/src/app
+    depends_on:
+      - web
+    command: certonly --webroot --webroot-path=/usr/src/app --email nikolay.v.byankin@gmail.com --agree-tos --no-eff-email --staging -d foodplandvm.tk  -d www.foodplandvm.tk
 volumes:
   static_volume:
   media_volume:
+  web-root:
+  certbot-var:
+  certbot-etc:
+networks:
+  app-network:
+    driver: bridge
