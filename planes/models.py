@@ -115,9 +115,9 @@ class Dish(models.Model):
         blank=True,
         verbose_name='Рецепт приготовления',
     )
-    calories = models.IntegerField(
+    calories = models.PositiveIntegerField(
+        default=0,
         blank=False,
-        default='',
         verbose_name='Калорийность',
     )
     picture = models.URLField(
