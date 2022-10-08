@@ -1,12 +1,13 @@
 import stripe
 from django.conf import settings
 
+from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash, authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.http import HttpResponseNotFound
 from django.shortcuts import redirect, render
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse
 from django.views.generic.edit import CreateView
 
 from planes.forms import CustomUserChangeForm, CustomUserCreationForm
@@ -143,6 +144,10 @@ def personal_account(request):
     else:
         form = CustomUserChangeForm()
 
+    django_messages = messages.get_messages(request)
+    if django_messages:
+        for message in django_messages:
+            message = message
     context = {
         'form': form,
         'message': message,
@@ -213,5 +218,6 @@ def successful_payment(request, payment_id):
 
     subscription.subscription_paid = True
     subscription.save()
+    messages.success(request, 'Подписка успешно оплачена.')
 
     return redirect('personal_account')
