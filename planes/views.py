@@ -151,7 +151,7 @@ def personal_account(request):
     context = {
         'form': form,
         'message': message,
-        'subscribes': user.subscribes.all()
+        'subscribes': user.subscribes.filter(subscription_paid=True)
     }
 
     return render(request, 'lk.html', context)
