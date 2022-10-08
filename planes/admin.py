@@ -1,25 +1,32 @@
 from django.contrib import admin
+from django.contrib.auth import get_user_model
+from django.contrib.auth.admin import UserAdmin
 
+from planes.forms import CustomUserCreationForm
 from planes.models import (
-    User,
     MenuType,
     Allergy,
     Dish,
     DishIngredient,
     Subscribe
-    )
+)
+
+User = get_user_model()
 
 
 @admin.register(User)
-class UserAdmin(admin.ModelAdmin):
-    list_display = [
-        'email',
-        'username',
-        'is_staff',
-        'is_active',
-        'is_admin',
-    ]
-    search_fields = ('username', 'email')
+class UserAdmin(UserAdmin):
+    add_fieldsets = (
+        (
+            None,
+            {
+                'classes': ('wide',),
+                'fields': ("username", 'email', 'password1', 'password2'),
+            },
+        ),
+    )
+    add_form = CustomUserCreationForm
+
 
 @admin.register(MenuType)
 class MenuTypeAdmin(admin.ModelAdmin):
