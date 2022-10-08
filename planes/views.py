@@ -161,7 +161,7 @@ def order(request):
     context = {'allergies': Allergy.objects.all()}
 
     if 'foodtype' in request.GET and request.user.is_authenticated:
-        redirect_payment_url(request)
+        return redirect_payment_url(request)
     if 'foodtype' in request.GET and not request.user.is_authenticated:
         request.session['order'] = request.GET
         return redirect('login')
