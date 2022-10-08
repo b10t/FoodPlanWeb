@@ -10,8 +10,18 @@
               <a class="navbar-brand" href="{% url 'index' %}">
                   <img src="{% static '/img/logo.8d8f24edbb5f.svg' %}" height="55" width="189" alt="">
               </a>
-              <button class="btn shadow-none btn-outline-success foodplan_green foodplan__border_green"
-              onclick="location.href='{% url 'login' %}'">Войти</button>
+
+            <div>
+                {% if user.is_authenticated %}
+                  <a class="nav-link fw-lighter foodplan_green foodplan__border_green fs_12" href= "{% url 'personal_account' %}" >{{ user.email }}</a>
+                  <a class="nav-link fw-lighter foodplan_green foodplan__border_green fs_12" href="{% url 'logout' %}">Выход</a>
+                {% else %}
+                  <button class="btn shadow-none btn-outline-success foodplan_green foodplan__border_green"
+                  onclick="location.href='{% url 'login' %}'">Войти</button>
+                  <button class="btn shadow-none btn-outline-success foodplan_green foodplan__border_green"
+                  onclick="location.href='{% url 'registration' %}'">Зарегистрироваться</button>
+                {% endif %}
+            </div>
           </div>
       </nav>
   </header>
