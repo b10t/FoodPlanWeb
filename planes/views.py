@@ -1,10 +1,11 @@
 import stripe
 from django.conf import settings
+
 from django.contrib.auth import update_session_auth_hash, authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.http import HttpResponseNotFound
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import redirect, render
 from django.urls import reverse, reverse_lazy
 from django.views.generic.edit import CreateView
 
@@ -12,7 +13,60 @@ from planes.forms import CustomUserChangeForm, CustomUserCreationForm
 from planes.models import Allergy, MenuType, Subscribe
 
 
+def redirect_payment_url(request):
+    meals_number = 4 - int(request.GET.get('select1')) \
+        - int(request.GET.get('select2')) \
+        - int(request.GET.get('select3')) \
+        - int(request.GET.get('select4'))
+    subscription = Subscribe()
+    subscription.user = request.user
+    duration = int(request.GET.get('duration'))
+    if duration == 0:
+        subscription.duration = 1
+    if duration == 1:
+        subscription.duration = 3
+    if duration == 2:
+        subscription.duration = 6
+    if duration == 3:
+        subscription.duration = 12
+    subscription.number_of_meals = meals_number
+    subscription.number_of_person = int(
+        request.GET.get('persons_number')
+    ) + 1
+    menu_type = request.GET.get('foodtype')
+    if menu_type == 'classic':
+        subscription.menu_type = MenuType.objects.get(name='Классическое')
+    if menu_type == 'low':
+        subscription.menu_type = MenuType.objects.get(
+            name='Низкоуглеводное'
+        )
+    if menu_type == 'veg':
+        subscription.menu_type = MenuType.objects.get(
+            name='Вегетарианское'
+        )
+    if menu_type == 'keto':
+        subscription.menu_type = MenuType.objects.get(name='Кето')
+    calories = request.GET.get('calories')
+    if calories:
+        subscription.calories = int(calories)
+    subscription.save()
+    allergy_ids = list()
+    for key, value in request.GET.items():
+        if key.startswith('allergy'):
+                allergy_ids.append(int(value))
+    for allergy_id in allergy_ids:
+        subscription.allergy.add(Allergy.objects.get(id=allergy_id))
+    payment_url = request.build_absolute_uri(
+        reverse(
+            'make_payment',
+            kwargs={'payment_id': subscription.payment_id}
+        )
+    )
+    return redirect(payment_url, code=303)
+
+
 class SignUpView(CreateView):
+
     template_name = 'registration.html'
     def get(self, request):
         form = CustomUserCreationForm()
@@ -35,6 +89,15 @@ class SignUpView(CreateView):
             'form': form
         }
         return render(request, self.template_name, context)
+
+    def form_valid(self, form):
+        result = super().form_valid(form)
+        new_user = authenticate(
+            username=form.cleaned_data["email"],
+            password=form.cleaned_data["password1"],
+        )
+        login(self.request, new_user)
+        return result
 
 
 def index(request):
@@ -72,7 +135,11 @@ def personal_account(request):
                 update_session_auth_hash(request, user)
 
                 message = 'Пароль успешно изменён.'
+    elif request.method == 'GET' and 'order' in request.session:
+        request.GET = request.session['order']
+        del request.session['order']
 
+        return redirect_payment_url(request)
     else:
         form = CustomUserChangeForm()
 
@@ -85,60 +152,14 @@ def personal_account(request):
     return render(request, 'lk.html', context)
 
 
-@login_required
 def order(request):
     context = {'allergies': Allergy.objects.all()}
-    if 'foodtype' in request.GET:
-        meals_number = 4 - int(request.GET.get('select1')) \
-            - int(request.GET.get('select2')) \
-            - int(request.GET.get('select3')) \
-            - int(request.GET.get('select4'))
-        subscription = Subscribe()
-        subscription.user = request.user
-        duration = int(request.GET.get('duration'))
-        if duration == 0:
-            subscription.duration = 1
-        if duration == 1:
-            subscription.duration = 3
-        if duration == 2:
-            subscription.duration = 6
-        if duration == 3:
-            subscription.duration = 12
-        subscription.number_of_meals = meals_number
-        subscription.number_of_person = int(
-            request.GET.get('persons_number')
-        ) + 1
-        menu_type = request.GET.get('foodtype')
-        if menu_type == 'classic':
-            subscription.menu_type = MenuType.objects.get(name='Классическое')
-        if menu_type == 'low':
-            subscription.menu_type = MenuType.objects.get(
-                name='Низкоуглеводное'
-            )
-        if menu_type == 'veg':
-            subscription.menu_type = MenuType.objects.get(
-                name='Вегетарианское'
-            )
-        if menu_type == 'keto':
-            subscription.menu_type = MenuType.objects.get(name='Кето')
-        calories = request.GET.get('calories')
-        if calories:
-            subscription.calories = int(calories)
-        subscription.save()
-        allergy_ids = list()
-        for key, value in request.GET.items():
-            if key.startswith('allergy'):
-                 allergy_ids.append(int(value))
-        for allergy_id in allergy_ids:
-            subscription.allergy.add(Allergy.objects.get(id=allergy_id))
-        payment_url = request.build_absolute_uri(
-            reverse(
-                'make_payment',
-                kwargs={'payment_id': subscription.payment_id}
-            )
-        )
-        return redirect(payment_url, code=303)
 
+    if 'foodtype' in request.GET and request.user.is_authenticated:
+        redirect_payment_url(request)
+    if 'foodtype' in request.GET and not request.user.is_authenticated:
+        request.session['order'] = request.GET
+        return redirect('login')
     return render(request, 'order.html', context)
 
 
@@ -183,8 +204,6 @@ def make_payment(request, payment_id):
 
 
 def successful_payment(request, payment_id):
-    context = {}
-
     try:
         subscription = Subscribe.objects.get(payment_id=payment_id)
     except ValidationError:
