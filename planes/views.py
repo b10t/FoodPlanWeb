@@ -1,6 +1,6 @@
 import stripe
 from django.conf import settings
-from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth import update_session_auth_hash, authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.http import HttpResponseNotFound
@@ -13,9 +13,28 @@ from planes.models import Allergy, MenuType, Subscribe
 
 
 class SignUpView(CreateView):
-    form_class = CustomUserCreationForm
-    success_url = reverse_lazy('login')
     template_name = 'registration.html'
+    def get(self, request):
+        form = CustomUserCreationForm()
+        context = {
+            'form': form
+        }
+        return render(request, self.template_name, context)
+
+    def post(self, request):
+        form = CustomUserCreationForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            email = form.cleaned_data.get('email')
+            password = form.cleaned_data.get('password1')
+            user = authenticate(email=email, password=password)
+            login(request, user)
+            return redirect('personal_account')
+        context = {
+            'form': form
+        }
+        return render(request, self.template_name, context)
 
 
 def index(request):
