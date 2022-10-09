@@ -105,26 +105,13 @@ class Dish(models.Model):
                 set(dish_ingredient.allergy.filter(~Q(name="нет")))
         return dish_allergy
 
-    def get_full_description(self):
-        dish_description = f'''{self.picture}
-Блюдо: {self.name}
-Описание: {self.description}
-Рецепт приготовления: {self.recipe}
-Калорийность: {self.calories}
-Ингредиенты:
-'''
-        for ingredient in self.ingredient_dish.all():
-            dish_description += f'{ingredient.name}, {ingredient.amount}, ' \
-                                f'{ingredient.unit}\n'
-        return dish_description
-
 
 class DishIngredient(models.Model):
     dish = models.ForeignKey(
         Dish,
         on_delete=models.CASCADE,
         verbose_name='Блюдо',
-        related_name='ingredient_dish'
+        related_name='ingredients_dish'
     )
     name = models.CharField(
         max_length=255, blank=False, default='',
@@ -216,26 +203,3 @@ class Subscribe(models.Model):
 
     def __str__(self):
         return f'Подписка "{self.id}"'
-
-    def get_allergies(self):
-        allergies = ''
-        for allergy in self.allergy.all():
-            allergies += f'{str(allergy)}, '
-        return allergies[:-2]
-
-    def get_subscribe_dish(self):
-        subs_allergies = set(self.allergy.filter(~Q(name="нет")))
-        dishes = []
-        for dish in Dish.objects.filter(menu_type=self.menu_type):
-            if not dish.get_allergies() & subs_allergies:
-                dishes.append(dish)
-        return dishes[random.randint(0, len(dishes) - 1)].get_full_description()
-
-    def get_subscribe_description(self):
-        return f'Пользователь: {self.user}\n' \
-               f'Количество приёмов пищи за день: {self.number_of_meals}\n' \
-               f'Количество персон: {self.number_of_person}\n' \
-               f'Аллергии: {self.get_allergies()}\n' \
-               f'Тип меню: {self.menu_type}\n' \
-               f'Длительность подписки, мес.: {self.duration}\n' \
-               f'Подписка оплачена: {"да" if self.subscription_paid else "нет"}'
