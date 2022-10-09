@@ -111,9 +111,9 @@ class SignUpView(CreateView):
 
 def index(request):
     if 'utm_source' in request.GET:
-        request.session['utm_source'] = request.GET.get['utm_source']
-        request.session['utm_medium'] = request.GET.get['utm_medium']
-        request.session['utm_campaign'] = request.GET.get['utm_campaign']
+        request.session['utm_source'] = request.GET.get('utm_source')
+        request.session['utm_medium'] = request.GET.get('utm_medium')
+        request.session['utm_campaign'] = request.GET.get('utm_campaign')
         request.session['utm_content'] = request.GET.get('utm_content')
         request.session['utm_term'] = request.GET.get('utm_term')
     
