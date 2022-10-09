@@ -1,5 +1,4 @@
 import random
-from tabnanny import verbose
 import uuid
 
 from django.contrib.auth.models import AbstractUser

@@ -53,9 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
   btn.addEventListener('click', async() => {
     const res = await fetch("/admin/planes/utm/chart_data/");
     const json = await res.json();
-    json.forEach((utm) => {
-      utm.x = new utm.date;
-    });
     chart.data.datasets[0].data = json;
     chart.update();
   });
