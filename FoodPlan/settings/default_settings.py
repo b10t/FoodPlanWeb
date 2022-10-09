@@ -33,6 +33,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'analytical',
+
     'planes',
 ]
 
@@ -131,3 +134,4 @@ AUTH_USER_MODEL = 'planes.User'
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'personal_account'
 LOGOUT_REDIRECT_URL = 'index'
+YANDEX_METRICA_COUNTER_ID = env.str('YANDEX_METRICA_COUNTER_ID')

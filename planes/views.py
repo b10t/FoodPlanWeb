@@ -11,7 +11,7 @@ from django.urls import reverse
 from django.views.generic.edit import CreateView
 
 from planes.forms import CustomUserChangeForm, CustomUserCreationForm
-from planes.models import Allergy, MenuType, Subscribe
+from planes.models import Allergy, MenuType, Subscribe, UTM
 
 
 def redirect_payment_url(request):
@@ -50,6 +50,14 @@ def redirect_payment_url(request):
     calories = request.GET.get('calories')
     if calories:
         subscription.calories = int(calories)
+    if 'utm_source' in request.session:
+        subscription.utm = UTM.objects.create(
+            source=request.session['utm_source'],
+            medium=request.session['utm_medium'],
+            campaign=request.session['utm_campaign'],
+            content=request.session['utm_content'],
+            term=request.session['utm_term'],
+        )
     subscription.save()
     allergy_ids = list()
     for key, value in request.GET.items():
@@ -102,6 +110,13 @@ class SignUpView(CreateView):
 
 
 def index(request):
+    if 'utm_source' in request.GET:
+        request.session['utm_source'] = request.GET.get('utm_source')
+        request.session['utm_medium'] = request.GET.get('utm_medium')
+        request.session['utm_campaign'] = request.GET.get('utm_campaign')
+        request.session['utm_content'] = request.GET.get('utm_content')
+        request.session['utm_term'] = request.GET.get('utm_term')
+    
     context = {
     }
 
