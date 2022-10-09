@@ -160,7 +160,12 @@
                                       </div>
                                   </div>
                                 {% endfor %}
-                              {% endif %}
+                              {% else %}
+                                <div class="d-flex flex-row justify-content-between"><strong class="foodplan_green">У вас нет активных подписок.</strong>
+                                    <button class="btn shadow-none btn-outline-success foodplan_green foodplan__border_green"
+                                    onclick="location.href='{% url 'order' %}'">Подписка</button>
+                                </div>
+                            {% endif %}
                             </div>
                         </div>
                     </div>

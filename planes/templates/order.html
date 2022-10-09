@@ -11,7 +11,18 @@
                   <img src="{% static '/img/logo.8d8f24edbb5f.svg' %}" height="55" width="189" alt="">
               </a>
               <h3 class="text-secondary mt-2 me-2" id="cost">Стоимость: 0₽</h3>
-              <button form="order" type="submit" id="btnContinue" class="btn shadow-none btn-sm btn-outline-success foodplan_green foodplan__border_green">Оплатить</button>
+            <div>
+                {% if user.is_authenticated %}
+                  <div class="d-flex align-items-center">
+                    <a class="nav-link fw-lighter foodplan_green foodplan__border_green fs_12" href= "{% url 'personal_account' %}" >{{ user.email }}</a>
+                  </div>
+                {% else %}
+                  <button class="btn shadow-none btn-outline-success foodplan_green foodplan__border_green"
+                    onclick="location.href='{% url 'login' %}'">Войти</button>
+                  <button class="btn shadow-none btn-outline-success foodplan_green foodplan__border_green"
+                    onclick="location.href='{% url 'registration' %}'">Зарегистрироваться</button>
+                {% endif %}
+            </div>
           </div>
       </nav>
   </header>
