@@ -8,7 +8,8 @@ from planes.models import (
     Allergy,
     Dish,
     DishIngredient,
-    Subscribe
+    Subscribe,
+    UTM
 )
 
 User = get_user_model()
@@ -50,6 +51,18 @@ class DishIngredientAdmin(admin.ModelAdmin):
 
 
 @admin.register(Subscribe)
-class Subscribe(admin.ModelAdmin):
+class SubscribeAdmin(admin.ModelAdmin):
     list_display = ['id', 'number_of_meals', 'number_of_person', 'menu_type',
                     'duration']
+
+
+@admin.register(UTM)
+class UTMAdmin(admin.ModelAdmin):
+    list_display = [
+        'source',
+        'medium',
+        'campaign',
+        'content',
+        'term',
+        'created_at'
+    ]
