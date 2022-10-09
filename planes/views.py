@@ -52,11 +52,11 @@ def redirect_payment_url(request):
         subscription.calories = int(calories)
     if 'utm_source' in request.session:
         subscription.utm, _ = UTM.objects.get_or_create(
-            source=request.session["utm_source"],
-            medium=request.session["utm_medium"],
-            campaign=request.session["utm_campaign"],
-            content=request.session["utm_content"],
-            term=request.session["utm_term"]
+            source=request.session['utm_source'],
+            medium=request.session['utm_medium'],
+            campaign=request.session['utm_campaign'],
+            content=request.session['utm_content'],
+            term=request.session['utm_term']
         )
     subscription.save()
     allergy_ids = list()
