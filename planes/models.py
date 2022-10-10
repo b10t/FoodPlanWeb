@@ -1,4 +1,9 @@
+
+from django.utils import timezone
+from tabnanny import verbose
+
 import random
+
 import uuid
 
 from django.contrib.auth.models import AbstractUser
@@ -60,57 +65,12 @@ class Allergy(models.Model):
         return self.name
 
 
-class Dish(models.Model):
-    menu_type = models.ForeignKey(
-        MenuType,
-        on_delete=models.CASCADE,
-        null=True,
-        verbose_name='Тип меню',
-        related_name='dish_menu_type'
-    )
-    name = models.CharField(
-        max_length=255, blank=False, default='',
-        verbose_name='Наименование',
-    )
-    description = models.TextField(
-        blank=True,
-        verbose_name='Описание',
-    )
-    recipe = models.TextField(
-        blank=True,
-        verbose_name='Рецепт приготовления',
-    )
-    calories = models.PositiveIntegerField(
-        default=0,
-        blank=False,
-        verbose_name='Калорийность',
-    )
-    picture = models.URLField(
-        max_length=4096,
-        verbose_name='Ссылка на картинку',
-    )
-
-    class Meta:
-        verbose_name = 'Блюдо'
-        verbose_name_plural = 'Блюда'
-
-    def __str__(self):
-        return f'Блюдо "{self.name}"'
-
-    def get_allergies(self):
-        dish_allergy = []
-        for dish_ingredient in self.ingredient_dish.all():
-            dish_allergy = set(dish_allergy) | \
-                set(dish_ingredient.allergy.filter(~Q(name="нет")))
-        return dish_allergy
-
-
 class DishIngredient(models.Model):
     dish = models.ForeignKey(
-        Dish,
+        'Dish',
         on_delete=models.CASCADE,
         verbose_name='Блюдо',
-        related_name='ingredients_dish'
+        related_name='dish_ingredients'
     )
     name = models.CharField(
         max_length=255, blank=False, default='',
@@ -126,7 +86,7 @@ class DishIngredient(models.Model):
     )
     allergy = models.ManyToManyField(
         Allergy,
-        related_name='ingredient_allergy',
+        related_name='allergy_ingredients',
     )
 
     class Meta:
@@ -236,3 +196,76 @@ class Subscribe(models.Model):
 
     def __str__(self):
         return f'Подписка "{self.id}"'
+
+
+class Dish(models.Model):
+    menu_type = models.ForeignKey(
+        MenuType,
+        on_delete=models.CASCADE,
+        null=True,
+        verbose_name='Тип меню',
+        related_name='dish_menu_type'
+    )
+    name = models.CharField(
+        max_length=255, blank=False, default='',
+        verbose_name='Наименование',
+    )
+    description = models.TextField(
+        blank=True,
+        verbose_name='Описание',
+    )
+    recipe = models.TextField(
+        blank=True,
+        verbose_name='Рецепт приготовления',
+    )
+    calories = models.PositiveIntegerField(
+        default=0,
+        blank=False,
+        verbose_name='Калорийность',
+    )
+    picture = models.URLField(
+        max_length=4096,
+        verbose_name='Ссылка на картинку',
+    )
+
+    class Meta:
+        verbose_name = 'Блюдо'
+        verbose_name_plural = 'Блюда'
+
+    def __str__(self):
+        return f'Блюдо "{self.name}"'
+
+    def get_allergies(self):
+        dish_allergy = []
+        for dish_ingredient in self.ingredient_dish.all():
+            dish_allergy = set(dish_allergy) | \
+                set(dish_ingredient.allergy.filter(~Q(name="нет")))
+        return dish_allergy
+
+
+class DishesOfDay(models.Model):
+    creation_date = models.DateField(
+        'Дата добавления записи',
+        default=timezone.now,
+        db_index=True
+    )
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name='Пользователь',
+    )
+    menu_type = models.CharField(
+        'Тип меню',
+        max_length=30,
+        blank=True,
+        )
+    dishes_of_day = models.TextField(
+        'Блюда дня',
+    )
+
+    class Meta:
+        verbose_name = 'Блюда дня'
+        verbose_name_plural = 'Блюда дней'
+
+    def __str__(self):
+        return self.user.email

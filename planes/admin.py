@@ -10,6 +10,7 @@ from django.urls import path
 
 from planes.forms import CustomUserCreationForm
 from planes.models import (
+    DishesOfDay,
     MenuType,
     Allergy,
     Dish,
@@ -62,6 +63,11 @@ class SubscribeAdmin(admin.ModelAdmin):
                     'duration']
 
 
+@admin.register(DishesOfDay)
+class DishesOfDay(admin.ModelAdmin):
+    pass
+
+
 @admin.register(UTM)
 class UTMAdmin(admin.ModelAdmin):
     list_display = [
@@ -94,3 +100,4 @@ class UTMAdmin(admin.ModelAdmin):
 
     def chart_data(self):
         return UTM.objects.values('source').annotate(y=Count('source'))
+
