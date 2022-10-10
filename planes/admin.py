@@ -65,6 +65,8 @@ class SubscribeAdmin(admin.ModelAdmin):
 
 @admin.register(DishesOfDay)
 class DishesOfDay(admin.ModelAdmin):
+    pass
+
 
 
 @admin.register(UTM)
