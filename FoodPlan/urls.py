@@ -23,7 +23,8 @@ from planes.views import (
     personal_account,
     SignUpView,
     make_payment,
-    successful_payment
+    successful_payment,
+    render_card,
 )
 from django.contrib.auth.views import LoginView, LogoutView
 
@@ -50,6 +51,7 @@ urlpatterns = [
         successful_payment,
         name='successful_payment'
     ),
+    path('card/<int:id>/', render_card, name='card'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

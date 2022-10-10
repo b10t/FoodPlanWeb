@@ -4,6 +4,7 @@ from django.contrib.auth.admin import UserAdmin
 
 from planes.forms import CustomUserCreationForm
 from planes.models import (
+    DishesOfDay,
     MenuType,
     Allergy,
     Dish,
@@ -53,3 +54,7 @@ class DishIngredientAdmin(admin.ModelAdmin):
 class Subscribe(admin.ModelAdmin):
     list_display = ['id', 'number_of_meals', 'number_of_person', 'menu_type',
                     'duration']
+
+@admin.register(DishesOfDay)
+class DishesOfDay(admin.ModelAdmin):
+    pass

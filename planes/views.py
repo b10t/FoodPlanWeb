@@ -1,6 +1,8 @@
+import json
 import stripe
 from django.conf import settings
 
+from datetime import date
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash, authenticate, login
 from django.contrib.auth.decorators import login_required
@@ -11,7 +13,7 @@ from django.urls import reverse
 from django.views.generic.edit import CreateView
 
 from planes.forms import CustomUserChangeForm, CustomUserCreationForm
-from planes.models import Allergy, MenuType, Subscribe
+from planes.models import Allergy, Dish, DishIngredient, DishesOfDay, MenuType, Subscribe, User
 
 
 def redirect_payment_url(request):
@@ -54,7 +56,7 @@ def redirect_payment_url(request):
     allergy_ids = list()
     for key, value in request.GET.items():
         if key.startswith('allergy'):
-                allergy_ids.append(int(value))
+            allergy_ids.append(int(value))
     for allergy_id in allergy_ids:
         subscription.allergy.add(Allergy.objects.get(id=allergy_id))
     payment_url = request.build_absolute_uri(
@@ -66,9 +68,87 @@ def redirect_payment_url(request):
     return redirect(payment_url, code=303)
 
 
+@login_required
+def render_card(request, id):
+    user = request.user
+    subscribe = user.subscribes.get(pk=id)
+    subscribe_dishes = get_subscribe_dishes(subscribe, user)
+    context = {
+        'subscribe_dishes': subscribe_dishes
+    }
+    return render(request, 'card.html', context)
+
+
+def get_subscribe_dishes(subscribe, user):
+    num_dishes = subscribe.number_of_person
+    menu_type = subscribe.menu_type
+    menu_type_title = menu_type.name
+    user_dishes = get_user_dishes(user, menu_type_title)
+    if user_dishes:
+        return json.loads(user_dishes)
+    dishes = Dish.objects.select_related(
+        'menu_type').filter(menu_type=menu_type).order_by('?')
+    menu_dishes = dishes[:num_dishes]
+    new_dishes_of_day = list()
+    for dish in menu_dishes:
+        dish_title = dish.name
+        dish_calories = dish.calories
+        dish_ingredients = get_normalize_dish_ingredients(dish)
+        one_dish = {
+            'dish_title': dish_title,
+            'dish_ingredients': dish_ingredients,
+            'dish_calories': dish_calories,
+        }
+        new_dishes_of_day.append(one_dish)
+    subscribe_dishes = set_user_dishes(
+        new_dishes_of_day, user, menu_type_title)
+    return subscribe_dishes
+
+
+def set_user_dishes(dishes, user, menu_type):
+    serialize_dishes = json.dumps(dishes)
+    new_dishes_of_day = DishesOfDay(
+        user=user,
+        dishes_of_day=serialize_dishes,
+        menu_type=menu_type,
+    )
+    new_dishes_of_day.save()
+    dishes_of_day = json.loads(new_dishes_of_day.dishes_of_day)
+    return dishes_of_day
+
+
+def get_user_dishes(user, menu_type):
+    dishes = DishesOfDay.objects.select_related(
+        'user').filter(user=user).filter(menu_type=menu_type)
+    if dishes:
+        raw_dishes_of_day = [
+            dish.dishes_of_day for dish in dishes if date.today() >= dish.creation_date
+        ]
+        dishes_of_day, *_ = raw_dishes_of_day
+
+        return dishes_of_day
+
+
+def get_normalize_dish_ingredients(dish):
+    dish_ingredients = dish.dish_ingredients.all()
+    normalize_dish_ingredients = list()
+    for ingredient in dish_ingredients:
+        ingredient_amount = ingredient.amount
+        if ingredient_amount == 'По вкусу':
+            ingredient_amount = ''
+        normalize_ingredient = {
+            'ingredient_title': ingredient.name,
+            'amount': ingredient_amount,
+            'unit': ingredient.unit,
+        }
+        normalize_dish_ingredients.append(normalize_ingredient)
+    return normalize_dish_ingredients
+
+
 class SignUpView(CreateView):
 
     template_name = 'registration.html'
+
     def get(self, request):
         form = CustomUserCreationForm()
         context = {
