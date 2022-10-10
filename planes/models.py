@@ -1,5 +1,9 @@
+
 from django.utils import timezone
 from tabnanny import verbose
+
+import random
+
 import uuid
 
 from django.contrib.auth.models import AbstractUser
@@ -93,6 +97,32 @@ class DishIngredient(models.Model):
         return f'Блюдо "{self.name}"'
 
 
+class UTM(models.Model):
+    source = models.CharField('источник перехода', max_length=100)
+    medium = models.CharField('тип трафика', max_length=100)
+    campaign = models.CharField('название компании', max_length=100)
+    content = models.CharField(
+        'информация о содержимом',
+        max_length=100,
+        default=None,
+        null=True
+    )
+    term = models.CharField(
+        'ключевое слово',
+        max_length=100,
+        default=None,
+        null=True
+    )
+    created_at = models.DateTimeField(
+        'дата создания',
+        auto_now_add=True,
+        editable=False
+    )
+
+    def __str__(self):
+        return f"{self.source} {self.campaign}"
+
+
 class Subscribe(models.Model):
     user = models.ForeignKey(
         User,
@@ -150,6 +180,14 @@ class Subscribe(models.Model):
         blank=False,
         default=False,
         verbose_name='Подписка оплачена'
+    )
+    utm = models.ForeignKey(
+        UTM,
+        on_delete=models.PROTECT,
+        verbose_name='UTM-метка',
+        related_name='subscribes',
+        default=None,
+        null=True
     )
 
     class Meta:
